@@ -18,6 +18,34 @@ final class Main
             password=bubble_application
             dbname=bubble
         ");
-        echo 'Hello, world!';
+
+        $view_timeline = new ViewTimeline\Html(
+            '/posts',
+            new class implements ViewTimeline\UrlProvider {
+                public function all_url(): string
+                {
+                    return '/all';
+                }
+
+                public function bubble_url(string $id): string
+                {
+                    return '/all/' . Support\Web\Escape::u($id);
+                }
+            },
+        );
+        $view_timeline->render(
+            [
+                new ViewTimeline\Bubble('1', 'A'),
+                new ViewTimeline\Bubble('2', 'B'),
+            ],
+            [
+                new ViewTimeline\Post('α'),
+                new ViewTimeline\Post('β'),
+                new ViewTimeline\Post('γ'),
+                new ViewTimeline\Post('δ'),
+            ],
+            '/x',
+            '/y',
+        );
     }
 }
