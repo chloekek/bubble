@@ -1,0 +1,26 @@
+Bubble
+======
+
+To build and run Bubble, run the following commands from the repository root:
+
+    nix run -ic ./build
+    target/development
+
+Overview of directories
+-----------------------
+
+config: Configuration for various components of the system.
+target: Output of build script.
+state: Development environment state.
+nix: Nixpkgs packages and configuration.
+src: Source code of the application.
+
+In development, the target and state directories are in the repository root.
+The state directory in development contains the state in subdirectories.
+
+In production, the repository is absent, but target and state do exist. The
+state directory in production contains symbolic links to appropriate
+locations.
+
+Regardless of environment, the working directory of a running system is
+always the directory that houses the target and state directories.

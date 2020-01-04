@@ -1,0 +1,21 @@
+set -o errexit
+set -o nounset
+
+postgresql_root=$1
+
+export PATH=$postgresql_root/bin:$PATH
+export PGHOST=$PWD/state/postgresql/sockets
+export PGUSER=postgres
+export PGPASSWORD=postgres
+
+while ! pg_isready; do
+    sleep 0.1
+done
+
+psql <<'SQL'
+    CREATE ROLE bubble_migrate LOGIN PASSWORD 'bubble_migrate';
+    CREATE ROLE bubble_application LOGIN PASSWORD 'bubble_application';
+    CREATE DATABASE bubble OWNER bubble_migrate;
+    \connect bubble
+    DROP SCHEMA public;
+SQL

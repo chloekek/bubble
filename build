@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+
+log() { printf '\033[1;34m*** %s\033[0m\n' "$1"; }
+
+log 'Find Nix packages.'
+nix-package() { nix-build --no-out-link --argstr target "$1"; }
+bash_root=$(nix-package bash)
+hivemind_root=$(nix-package hivemind)
+nginx_root=$(nix-package nginx)
+php_root=$(nix-package php74)
+postgresql_root=$(nix-package postgresql_12)
+
+log 'Install PHP packages.'
+export COMPOSER=config/composer.json
+export COMPOSER_HOME=target/composer-home
+export COMPOSER_VENDOR_DIR=target/composer-vendor
+composer install
+
+log 'Type check PHP code.'
+target/composer-vendor/bin/psalm --config=config/psalm.xml
+
+log 'Install Nginx configuration.'
+mkdir --parents target/nginx/
+cp config/nginx.conf target/nginx/nginx.conf
+cp config/nginx.fastcgi target/nginx/nginx.fastcgi
+
+log 'Install PHP-FPM configuration.'
+mkdir --parents target/php-fpm
+cp config/php-fpm.conf target/php-fpm/php-fpm.conf
+
+log 'Install PostgreSQL configuration.'
+mkdir --parents target/postgresql
+cp config/postgresql.conf target/postgresql/postgresql.conf
+cp config/postgresql.hba target/postgresql/postgresql.hba
+cp config/postgresql.ident target/postgresql/postgresql.ident
+cp config/postgresql.setup target/postgresql/postgresql.setup
+
+log 'Install the application.'
+rsync --archive --delete src/ target/application/
+
+log 'Generate Procfile.'
+{
+    echo "nginx: $nginx_root/bin/nginx -p \$PWD/state/nginx -c \$PWD/target/nginx/nginx.conf"
+    echo "php-fpm: $php_root/bin/php-fpm -p \$PWD -y target/php-fpm/php-fpm.conf"
+    echo "postgresql: $postgresql_root/bin/postgres --config-file=target/postgresql/postgresql.conf -k \$PWD/state/postgresql/sockets"
+    echo "postgresql-setup: $bash_root/bin/bash target/postgresql/postgresql.setup $postgresql_root && sleep infinity"
+} > target/Procfile
+
+log 'Generate Hivemind wrapper.'
+{
+    echo "#!$bash_root/bin/bash"
+    echo 'set -o errexit'
+    echo 'set -o nounset'
+
+    # Create state directory layout.
+    echo 'mkdir --parents state/{nginx/logs,php-fpm,postgresql/sockets}'
+
+    # Redirect Nginx logs to stderr.
+    echo 'ln --force --symbolic /dev/stderr state/nginx/logs/access.log'
+    echo 'ln --force --symbolic /dev/stderr state/nginx/logs/error.log'
+
+    # Create PostgreSQL data directory.
+    echo 'if ! [[ -e state/postgresql/data ]]; then'
+    echo "    $postgresql_root/bin/initdb -D state/postgresql/data -U postgres --pwfile=<(echo postgres)"
+    echo 'fi'
+
+    # Start system.
+    echo "exec $hivemind_root/bin/hivemind --root \$PWD target/Procfile"
+} > target/development
+chmod +x target/development

@@ -1,0 +1,10 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Bubble\\": ["src/Bubble/"]
+        }
+    },
+    "require-dev": {
+        "vimeo/psalm": "3.8.1"
+    }
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<psalm ensureArrayStringOffsetsExist="true"
+       strictBinaryOperands="true"
+       totallyTyped="true">
+    <projectFiles>
+        <directory name="src" />
+        <ignoreFiles>
+            <file name="src/index.php" />
+        </ignoreFiles>
+    </projectFiles>
+    <issueHandlers>
+        <ForbiddenCode errorLevel="suppress" />
+    </issueHandlers>
+</psalm>

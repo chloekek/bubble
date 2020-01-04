@@ -1,0 +1,4 @@
+#        database    user                  auth-method
+local    all         postgres              md5
+local    bubble      bubble_application    md5
+local    bubble      bubble_migrate        md5
