@@ -32,6 +32,7 @@ final class Escape
      */
     public static function h(string $s): string
     {
-        return \htmlentities($s, \ENT_QUOTES);
+        $f = \ENT_HTML5 | \ENT_QUOTES;
+        return \htmlspecialchars($s, $f);
     }
 }
