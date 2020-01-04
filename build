@@ -50,6 +50,9 @@ cp config/postgresql.setup target/postgresql/postgresql.setup
 log 'Install the application.'
 rsync --archive --delete src/ target/application/
 
+log 'Render API documentation.'
+doxygen config/Doxyfile
+
 log 'Generate Procfile.'
 {
     echo "nginx: $nginx_root/bin/nginx -p \$PWD/state/nginx -c \$PWD/target/nginx/nginx.conf"

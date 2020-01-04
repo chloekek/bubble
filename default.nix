@@ -5,6 +5,7 @@ let
         inherit (pkgs)
             bash
             coreutils
+            doxygen
             gnused
             hivemind
             nginx
