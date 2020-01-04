@@ -27,6 +27,10 @@ mkdir --parents target/nginx/
 cp config/nginx.conf target/nginx/nginx.conf
 cp config/nginx.fastcgi target/nginx/nginx.fastcgi
 
+log 'Install PHP configuration.'
+mkdir --parents target/php
+sed "s:@php_root@:$php_root:g" config/php.ini > target/php/php.ini
+
 log 'Install PHP-FPM configuration.'
 mkdir --parents target/php-fpm
 cp config/php-fpm.conf target/php-fpm/php-fpm.conf
@@ -44,7 +48,7 @@ rsync --archive --delete src/ target/application/
 log 'Generate Procfile.'
 {
     echo "nginx: $nginx_root/bin/nginx -p \$PWD/state/nginx -c \$PWD/target/nginx/nginx.conf"
-    echo "php-fpm: $php_root/bin/php-fpm -p \$PWD -y target/php-fpm/php-fpm.conf"
+    echo "php-fpm: $php_root/bin/php-fpm -p \$PWD -c target/php -y target/php-fpm/php-fpm.conf"
     echo "postgresql: $postgresql_root/bin/postgres --config-file=target/postgresql/postgresql.conf -k \$PWD/state/postgresql/sockets"
     echo "postgresql-setup: $bash_root/bin/bash target/postgresql/postgresql.setup $postgresql_root && sleep infinity"
 } > target/Procfile
