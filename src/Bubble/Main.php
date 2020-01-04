@@ -19,6 +19,8 @@ final class Main
             dbname=bubble
         ");
 
+        echo '<!DOCTYPE html><meta charset="utf-8"><title>Bubble</title>';
+        echo '<link rel="stylesheet" href="/assets/index.css">';
         $view_timeline = new ViewTimeline\Html(
             '/posts',
             new class implements ViewTimeline\UrlProvider {

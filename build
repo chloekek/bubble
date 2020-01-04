@@ -22,10 +22,15 @@ composer install
 log 'Type check PHP code.'
 target/composer-vendor/bin/psalm --config=config/psalm.xml
 
+log 'Compile Sass code.'
+mkdir --parents target/assets
+sassc --precision 10 src/index.scss target/assets/index.css
+
 log 'Install Nginx configuration.'
 mkdir --parents target/nginx/
 cp config/nginx.conf target/nginx/nginx.conf
 cp config/nginx.fastcgi target/nginx/nginx.fastcgi
+cp config/nginx.mime target/nginx/nginx.mime
 
 log 'Install PHP configuration.'
 mkdir --parents target/php

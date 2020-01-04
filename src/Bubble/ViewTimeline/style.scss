@@ -1,0 +1,38 @@
+@mixin --timeline-selector--circle
+{
+    content: ' ';
+    display: block;
+    border: solid 2px black;
+    border-radius: 50%;
+    height: 48px;
+    width: 48px;
+}
+
+.--timeline-selector
+{
+    display: flex;
+    gap: 8px;
+
+    & > .-all, & > .-bubble
+    {
+        &:before
+        {
+            @include --timeline-selector--circle;
+        }
+
+        text-align: center;
+    }
+}
+
+.--timeline
+{
+    & > .-post
+    {
+        & + .-post
+        {
+            border-top: solid 1px black;
+        }
+
+        padding: 8px 0;
+    }
+}
