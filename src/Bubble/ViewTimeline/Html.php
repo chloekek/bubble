@@ -2,7 +2,8 @@
 declare(strict_types = 1);
 namespace Bubble\ViewTimeline;
 
-use Bubble\Support\Web\Escape as E;
+use Bubble\Support\Web\Widget;
+use Bubble\Support\Web\Widget\Html as H;
 
 /**
  * Render the HTML page for the “view timeline” use case.
@@ -24,29 +25,43 @@ final class Html
      *
      * @param Bubble[] $bubbles
      * @param Post[] $posts
+     * @return Widget[]
      */
     public function render($bubbles, $posts, ?string $previous_page_url,
-                           ?string $next_page_url): void
+                           ?string $next_page_url)
     {
-        $this->render_post_composer();
-        $this->render_timeline_selector($bubbles);
-        self::render_timeline($posts, $previous_page_url, $next_page_url);
+        return [
+            $this->render_post_composer(),
+            $this->render_timeline_selector($bubbles),
+            self::render_timeline($posts, $previous_page_url, $next_page_url),
+        ];
     }
 
     /**
      * Render the form that allows the user to compose a new post
      * and publish it or save it as a draft.
      */
-    public function render_post_composer(): void
+    public function render_post_composer(): Widget
     {
-        ?>
-            <form class="--post-composer" method="post"
-                  action="<?= E::h($this->submit_url) ?>">
-                <textarea class="-body" name="body"></textarea>
-                <button class="-publish" name="publish">Publish</button>
-                <button class="-draft" name="draft">Draft</button>
-            </form>
-        <?php
+        return H::form(
+            [ 'class' => '--post-composer'
+            , 'method' => 'post'
+            , 'action' => $this->submit_url ],
+            H::textarea(
+                [ 'class' => '-body'
+                , 'name' => 'body' ],
+            ),
+            H::button(
+                [ 'class' => '-publish'
+                , 'name' => 'publish' ],
+                H::text('Publish'),
+            ),
+            H::button(
+                [ 'class' => '-draft'
+                , 'name' => 'draft' ],
+                H::text('Draft'),
+            ),
+        );
     }
 
     /**
@@ -55,34 +70,33 @@ final class Html
      *
      * @param Bubble[] $bubbles
      */
-    public function render_timeline_selector($bubbles): void
+    public function render_timeline_selector($bubbles): Widget
     {
-        ?>
-            <nav class="--timeline-selector">
-                <?php $this->render_all_link(); ?>
-                <?php foreach ($bubbles as $bubble): ?>
-                    <?php $this->render_bubble_link($bubble); ?>
-                <?php endforeach; ?>
-            </nav>
-        <?php
+        return H::nav(
+            [ 'class' => '--timeline-selector' ],
+            $this->render_all_link(),
+            ...\array_map([$this, 'render_bubble_link'], $bubbles),
+        );
     }
 
-    private function render_all_link(): void
+    private function render_all_link(): Widget
     {
         $url = $this->url_provider->all_url();
-        ?>
-            <a class="-all" href="<?= E::h($url) ?>">
-                All</a>
-        <?php
+        return H::a(
+            [ 'class' => '-all'
+            , 'href' => $url ],
+            H::text('All'),
+        );
     }
 
-    private function render_bubble_link(Bubble $bubble): void
+    private function render_bubble_link(Bubble $bubble): Widget
     {
         $url = $this->url_provider->bubble_url($bubble->id);
-        ?>
-            <a class="-bubble" href="<?= E::h($url) ?>">
-                <?= E::h($bubble->name) ?></a>
-        <?php
+        return H::a(
+            [ 'class' => '-bubble'
+            , 'href' => $url ],
+            H::text($bubble->name),
+        );
     }
 
     /**
@@ -92,32 +106,53 @@ final class Html
      * @param Post[] $posts
      */
     public function render_timeline($posts, ?string $previous_page_url,
-                                    ?string $next_page_url): void
+                                    ?string $next_page_url): Widget
     {
-        ?>
-            <section class="--timeline">
-                <?php foreach ($posts as $post): ?>
-                    <article class="-post">
-                        <?= E::h($post->body) ?>
-                    </article>
-                <?php endforeach; ?>
+        return H::section(
+            [ 'class' => '--timeline' ],
+            ...\array_map([$this, 'render_post'], $posts),
+            ...$this->render_page_selector($previous_page_url, $next_page_url),
+        );
+    }
 
-                <?php if ($previous_page_url !== NULL ||
-                          $next_page_url !== NULL): ?>
-                    <nav class="-page-selector">
-                        <?php if ($previous_page_url !== NULL): ?>
-                            <a class="-previous"
-                               href="<?= E::h($previous_page_url) ?>">
-                                Previous</a>
-                        <?php endif; ?>
-                        <?php if ($next_page_url !== NULL): ?>
-                            <a class="-next"
-                               href="<?= E::h($next_page_url) ?>">
-                                Next</a>
-                        <?php endif; ?>
-                    </nav>
-                <?php endif; ?>
-            </section>
-        <?php
+    private function render_post(Post $post): Widget
+    {
+        return H::article(
+            [ 'class' => '-post' ],
+            H::text($post->body),
+        );
+    }
+
+    /**
+     * @return Widget[]
+     */
+    private function render_page_selector(?string $previous_page_url,
+                                          ?string $next_page_url)
+    {
+        $page_links = [];
+
+        if ($previous_page_url !== NULL)
+            $page_links[] = H::a(
+                [ 'class' => '-previous'
+                , 'href' => $previous_page_url ],
+                H::text('Previous'),
+            );
+
+        if ($next_page_url !== NULL)
+            $page_links[] = H::a(
+                [ 'class' => '-next'
+                , 'href' => $next_page_url ],
+                H::text('Next'),
+            );
+
+        if (\count($page_links) === 0) {
+            return [];
+        } else {
+            $nav = H::nav(
+                [ 'class' => '-page-selector' ],
+                ...$page_links,
+            );
+            return [$nav];
+        }
     }
 }

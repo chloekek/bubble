@@ -33,7 +33,7 @@ final class Main
                 }
             },
         );
-        $view_timeline->render(
+        $widgets = $view_timeline->render(
             [
                 new ViewTimeline\Bubble('1', 'A'),
                 new ViewTimeline\Bubble('2', 'B'),
@@ -47,5 +47,7 @@ final class Main
             '/x',
             '/y',
         );
+        foreach ($widgets as $widget)
+            $widget->toHtml();
     }
 }
