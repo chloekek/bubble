@@ -22,9 +22,16 @@ class QueryTimeline
     {
         $cnf = Cnf::for_bubble($this->db, $bubble_id);
         \var_dump($cnf);
-        // Step 2: Turn CNF AST into SQL expression and parameter list.
-        // Step 3: Execute query.
-        // Step 4: Return posts.
+
+        $parameters = [];
+        $sql = $cnf->to_sql('p', $parameters);
+        \var_dump($sql);
+        \var_dump($parameters);
+
+        // TODO: Create query.
+        // TODO: Execute query.
+        // TODO: Return posts.
+
         return [];
     }
 }

@@ -4,6 +4,7 @@ namespace Bubble\Support;
 
 use Bubble\Support\Cnf\Literal;
 use Bubble\Support\Postgresql;
+use Traversable;
 
 /**
  * The predicate of a bubble is encoded in conjunctive normal form [1]. This
@@ -74,5 +75,45 @@ final class Cnf
         }
 
         return new Cnf(\array_values($cnf));
+    }
+
+    /**
+     * Compile the CNF AST into a SQL expression. The SQL expression has the
+     * highest precedence, as it is wrapped in parentheses. Parameters will be
+     * appended onto the given array, and the parameter indices (i.e. the
+     * integers following the dollar signs) will be determined from the array’s
+     * length.
+     *
+     * @param string $posts The SQL identifier that names the posts table.
+     * @param array<?string> $parameters
+     */
+    public function to_sql(string $posts, &$parameters): string
+    {
+        $tokens = $this->to_sql_tokens($posts, $parameters);
+        return \implode(' ', \iterator_to_array($tokens, FALSE));
+    }
+
+    /**
+     * Like to_sql, but return a generator of tokens instead. You should not
+     * use $parameters until the generator is completely consumed.
+     *
+     * @param array<?string> $parameters
+     * @return Traversable<string>
+     */
+    public function to_sql_tokens(string $posts, &$parameters)
+    {
+        yield '(';
+        yield 'TRUE';
+            foreach ($this->cnf as $disjunction):
+                yield 'AND';
+                yield '(';
+                yield 'FALSE';
+                    foreach ($disjunction as $literal):
+                        yield 'OR';
+                        yield from $literal->to_sql_tokens($posts, $parameters);
+                    endforeach;
+                yield ')';
+            endforeach;
+        yield ')';
     }
 }
