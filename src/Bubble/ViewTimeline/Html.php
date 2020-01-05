@@ -73,8 +73,9 @@ final class Html
     {
         H::open('nav', [ 'class' => '--timeline-selector' ]);
             $this->render_all_link();
-            foreach ($bubbles as $bubble)
+            foreach ($bubbles as $bubble):
                 $this->render_bubble_link($bubble);
+            endforeach;
         H::close('nav');
     }
 
@@ -106,8 +107,9 @@ final class Html
                                     ?string $next_page_url): void
     {
         H::open('section', [ 'class' => '--timeline' ]);
-            foreach ($posts as $post)
+            foreach ($posts as $post):
                 $this->render_post($post);
+            endforeach;
             $this->render_page_selector($previous_page_url, $next_page_url);
         H::close('section');
     }
@@ -128,19 +130,19 @@ final class Html
 
         H::open('nav', [ 'class' => '-page-selector' ]);
 
-            if ($previous_page_url !== NULL) {
+            if ($previous_page_url !== NULL):
                 H::open('a', [ 'class' => '-previous'
                              , 'href' => $previous_page_url ]);
                     H::text('Previous');
                 H::close('a');
-            }
+            endif;
 
-            if ($next_page_url !== NULL) {
+            if ($next_page_url !== NULL):
                 H::open('a', [ 'class' => '-next'
                              , 'href' => $next_page_url ]);
                     H::text('Next');
                 H::close('a');
-            }
+            endif;
 
         H::close('nav');
     }
