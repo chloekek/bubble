@@ -2,6 +2,9 @@
 declare(strict_types = 1);
 namespace Bubble\Support\Web;
 
+/**
+ * Routines for escaping text for inclusion in web-related data formats.
+ */
 final class Escape
 {
     private function __construct()
