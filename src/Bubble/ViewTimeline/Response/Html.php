@@ -1,12 +1,15 @@
 <?php
 declare(strict_types = 1);
-namespace Bubble\ViewTimeline;
+namespace Bubble\ViewTimeline\Response;
 
 use Bubble\Support\Web\Html as H;
+use Bubble\ViewTimeline\Xact\Bubble;
+use Bubble\ViewTimeline\Xact\Post;
 
 /**
  * Render the HTML page for the “view timeline” use case.
- * See the mockup for what this is supposed to resemble.
+ * See the Mockup.svg file for what this is supposed to resemble.
+ * The file Html.scss houses the corresponding style sheet.
  */
 final class Html
 {

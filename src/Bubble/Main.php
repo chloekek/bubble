@@ -25,9 +25,9 @@ final class Main
 
         echo '<!DOCTYPE html><meta charset="utf-8"><title>Bubble</title>';
         echo '<link rel="stylesheet" href="/assets/index.css">';
-        $view_timeline = new ViewTimeline\Html(
+        $view_timeline = new ViewTimeline\Response\Html(
             '/posts',
-            new class implements ViewTimeline\UrlProvider {
+            new class implements ViewTimeline\Response\UrlProvider {
                 public function all_url(): string
                 {
                     return '/all';
@@ -41,14 +41,14 @@ final class Main
         );
         $view_timeline->render(
             [
-                new ViewTimeline\Bubble('1', 'A'),
-                new ViewTimeline\Bubble('2', 'B'),
+                new ViewTimeline\Xact\Bubble('1', 'A'),
+                new ViewTimeline\Xact\Bubble('2', 'B'),
             ],
             [
-                new ViewTimeline\Post($lipsum->paragraph()),
-                new ViewTimeline\Post($lipsum->paragraph()),
-                new ViewTimeline\Post($lipsum->paragraph()),
-                new ViewTimeline\Post($lipsum->paragraph()),
+                new ViewTimeline\Xact\Post($lipsum->paragraph()),
+                new ViewTimeline\Xact\Post($lipsum->paragraph()),
+                new ViewTimeline\Xact\Post($lipsum->paragraph()),
+                new ViewTimeline\Xact\Post($lipsum->paragraph()),
             ],
             '/x',
             '/y',

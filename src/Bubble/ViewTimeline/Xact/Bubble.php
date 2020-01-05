@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace Bubble\ViewTimeline;
+namespace Bubble\ViewTimeline\Xact;
 
 final class Bubble
 {
