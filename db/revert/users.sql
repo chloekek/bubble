@@ -1,0 +1,6 @@
+START TRANSACTION;
+
+DROP TABLE bubble.users;
+DROP COLLATION bubble.nickname;
+
+COMMIT WORK;

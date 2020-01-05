@@ -1,0 +1,7 @@
+START TRANSACTION;
+
+DROP TABLE bubble.posts;
+DROP FUNCTION bubble.extract_tags(CHARACTER VARYING);
+DROP COLLATION bubble.tag;
+
+COMMIT WORK;

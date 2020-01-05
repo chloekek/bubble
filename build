@@ -12,6 +12,7 @@ hivemind_root=$(nix-package hivemind)
 nginx_root=$(nix-package nginx)
 php_root=$(nix-package php74)
 postgresql_root=$(nix-package postgresql_12)
+sqitch_root=$(nix-package sqitchPg)
 
 log 'Install PHP packages.'
 export COMPOSER=config/composer.json
@@ -58,7 +59,7 @@ log 'Generate Procfile.'
     echo "nginx: $nginx_root/bin/nginx -p \$PWD/state/nginx -c \$PWD/target/nginx/nginx.conf"
     echo "php-fpm: $php_root/bin/php-fpm -p \$PWD -c target/php -y target/php-fpm/php-fpm.conf"
     echo "postgresql: $postgresql_root/bin/postgres --config-file=target/postgresql/postgresql.conf -k \$PWD/state/postgresql/sockets"
-    echo "postgresql-setup: $bash_root/bin/bash target/postgresql/postgresql.setup $postgresql_root && sleep infinity"
+    echo "postgresql-setup: $bash_root/bin/bash target/postgresql/postgresql.setup $postgresql_root $sqitch_root && sleep infinity"
 } > target/Procfile
 
 log 'Generate Hivemind wrapper.'

@@ -13,7 +13,8 @@ let
             php74
             postgresql_12
             rsync
-            sassc;
+            sassc
+            sqitchPg;
         inherit (pkgs.php74Packages)
             composer;
     };

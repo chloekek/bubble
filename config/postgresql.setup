@@ -2,8 +2,9 @@ set -o errexit
 set -o nounset
 
 postgresql_root=$1
+sqitch_root=$2
 
-export PATH=$postgresql_root/bin:$PATH
+export PATH=$postgresql_root/bin:$sqitch_root/bin:$PATH
 export PGHOST=$PWD/state/postgresql/sockets
 export PGUSER=postgres
 export PGPASSWORD=postgres
@@ -19,3 +20,8 @@ psql <<'SQL'
     \connect bubble
     DROP SCHEMA public;
 SQL
+
+export PGUSER=bubble_migrate
+export PGPASSWORD=bubble_migrate
+export PGDATABASE=bubble
+(cd db && sqitch deploy)

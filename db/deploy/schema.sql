@@ -1,0 +1,6 @@
+START TRANSACTION;
+
+CREATE SCHEMA bubble;
+GRANT USAGE ON SCHEMA bubble TO bubble_application;
+
+COMMIT WORK;

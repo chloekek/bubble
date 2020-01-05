@@ -1,0 +1,7 @@
+%syntax-version=1.0.0
+%project=bubble
+
+schema 1970-01-01T00:00:00Z nobody <nobody@nobody>
+users [schema] 1970-01-01T00:00:00Z nobody <nobody@nobody>
+posts [users] 1970-01-01T00:00:00Z nobody <nobody@nobody>
+bubbles [users] 1970-01-01T00:00:00Z nobody <nobody@nobody>
