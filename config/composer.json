@@ -4,6 +4,9 @@
             "Bubble\\": ["src/Bubble/"]
         }
     },
+    "require": {
+        "joshtronic/php-loremipsum": "1.0.4"
+    },
     "require-dev": {
         "vimeo/psalm": "3.8.1"
     }

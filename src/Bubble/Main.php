@@ -2,6 +2,8 @@
 declare(strict_types = 1);
 namespace Bubble;
 
+use joshtronic\LoremIpsum;
+
 final class Main
 {
     private function __construct()
@@ -18,6 +20,8 @@ final class Main
             password=bubble_application
             dbname=bubble
         ");
+
+        $lipsum = new LoremIpsum;
 
         echo '<!DOCTYPE html><meta charset="utf-8"><title>Bubble</title>';
         echo '<link rel="stylesheet" href="/assets/index.css">';
@@ -41,10 +45,10 @@ final class Main
                 new ViewTimeline\Bubble('2', 'B'),
             ],
             [
-                new ViewTimeline\Post('α'),
-                new ViewTimeline\Post('β'),
-                new ViewTimeline\Post('γ'),
-                new ViewTimeline\Post('δ'),
+                new ViewTimeline\Post($lipsum->paragraph()),
+                new ViewTimeline\Post($lipsum->paragraph()),
+                new ViewTimeline\Post($lipsum->paragraph()),
+                new ViewTimeline\Post($lipsum->paragraph()),
             ],
             '/x',
             '/y',

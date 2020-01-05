@@ -17,7 +17,7 @@ log 'Install PHP packages.'
 export COMPOSER=config/composer.json
 export COMPOSER_HOME=target/composer-home
 export COMPOSER_VENDOR_DIR=target/composer-vendor
-composer install
+composer update
 
 log 'Type check PHP code.'
 target/composer-vendor/bin/psalm --config=config/psalm.xml
