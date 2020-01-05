@@ -14,12 +14,15 @@ final class Main
     {
         $state   = getcwd() . '/../../state';
         $pg_host = "$state/postgresql/sockets";
-        pg_connect("
+        $db = new Support\Postgresql\Connection("
             host=$pg_host
             user=bubble_application
             password=bubble_application
             dbname=bubble
         ");
+
+        $cnf = Support\Cnf::for_bubble($db, '8d96cc11-327e-48de-a7e9-af5654375a8d');
+        \var_dump($cnf);
 
         $lipsum = new LoremIpsum;
 
