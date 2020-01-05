@@ -6,8 +6,16 @@ use Bubble\Support\Cnf\Literal;
 use Bubble\Support\Postgresql;
 
 /**
- * Conjunctive normal form representation of a Bubble predicate. A CNF AST can
- * be evaluated against a post, resulting in a Boolean.
+ * The predicate of a bubble is encoded in conjunctive normal form [1]. This
+ * class embodies that notion in AST form, and has methods to retrieve
+ * predicates from the database and render them to SQL.
+ *
+ * Rendering a CNF AST to SQL allows it to be evaluated against posts, for
+ * instance in the WHERE clause of an SQL query. It is expected that the query
+ * planner in PostgreSQL will take care of optimizing the predicate using
+ * indexes.
+ *
+ * [1]: https://en.wikipedia.org/wiki/Conjunctive_normal_form
  */
 final class Cnf
 {

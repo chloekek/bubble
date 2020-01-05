@@ -21,8 +21,8 @@ final class Main
             dbname=bubble
         ");
 
-        $cnf = Support\Cnf::for_bubble($db, '8d96cc11-327e-48de-a7e9-af5654375a8d');
-        \var_dump($cnf);
+        $queryTimeline = new ViewTimeline\Xact\QueryTimeline($db);
+        $queryTimeline->query_bubble_timeline('8d96cc11-327e-48de-a7e9-af5654375a8d');
 
         $lipsum = new LoremIpsum;
 

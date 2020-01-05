@@ -7,6 +7,7 @@ let
             coreutils
             doxygen
             gnused
+            graphviz
             hivemind
             nginx
             nix
