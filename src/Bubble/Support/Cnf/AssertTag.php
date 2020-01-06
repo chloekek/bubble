@@ -5,8 +5,13 @@ namespace Bubble\Support\Cnf;
 use Traversable;
 
 /**
- * This CNF literal, when evaluated against a post, checks that the post has
- * or lacks the specified tag as one of its tags.
+ * @ingroup cnf
+ *
+ * @brief The AssertTag class is a derived class of the Literal class that
+ * implements literals that check whether applied-to posts have a certain tag.
+ *
+ * Please see the Literal class for more information about definition and
+ * usage.
  */
 final class AssertTag
     extends Literal

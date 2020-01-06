@@ -3,6 +3,8 @@ declare(strict_types = 1);
 namespace Bubble\ViewTimeline\Response;
 
 /**
+ * @ingroup view_timeline
+ *
  * Provide URLs to endpoints for the “view timeline” use case.
  */
 interface UrlProvider

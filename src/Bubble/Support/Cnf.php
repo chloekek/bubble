@@ -7,22 +7,53 @@ use Bubble\Support\Postgresql;
 use Traversable;
 
 /**
- * The predicate of a bubble is encoded in conjunctive normal form [1]. This
- * class embodies that notion in AST form, and has methods to retrieve
- * predicates from the database and render them to SQL.
+ * @defgroup cnf CNF
  *
- * Rendering a CNF AST to SQL allows it to be evaluated against posts, for
- * instance in the WHERE clause of an SQL query. It is expected that the query
- * planner in PostgreSQL will take care of optimizing the predicate using
- * indexes.
+ * @brief Each bubble has a predicate that decides which posts are a member of the
+ * bubble and which are not. Such a predicate is also known as “a CNF”, due to
+ * its representation, <em>conjunctive normal form</em>.
  *
- * [1]: https://en.wikipedia.org/wiki/Conjunctive_normal_form
+ * In short, CNF has the syntax listed in figure 1. This syntax is embodied by
+ * the classes in this module. These classes also have useful methods for
+ * working with CNFs, so please familiarize yourself with them.
+ *
+ * Figure 1:
+ *
+ * @code
+ * <cnf>         ::= <conjunction>
+ * <conjunction> ::= <disjunction>*
+ * <disjunction> ::= <literal>+
+ * <literal>     ::= ‘not’? (<author> | <tag>)
+ * @endcode
+ *
+ * Evaluating a CNF against a post proceeds as follows:
+ *
+ * - A conjunction evaluates to true iff all of the disjunctions inside it
+ *   evaluate to true.
+ * - A disjunction evaluates to true iff any of the literals inside it evaluate
+ *   to true.
+ * - Whether a literal evaluates to true depends on the literal. See the
+ *   derived classes of the Literal class for more information.
+ *
+ * You can learn more about conjunctive normal form in [an encyclopedia article
+ * about it][cnf].
+ *
+ * [cnf]: https://en.wikipedia.org/wiki/Conjunctive_normal_form
+ */
+
+/**
+ * @ingroup cnf
+ *
+ * @brief The Cnf class implements a data structure for CNFs.
+ *
+ * The Cnf class has methods to retrieve CNFs from the database, as well as
+ * methods to compile CNFs into SQL for evaluation against posts.
  */
 final class Cnf
 {
     /**
-     * Jagged multidimensional array of literals. The outer array is one of
-     * disjunctions, the inner ones are of literals.
+     * @brief Jagged multidimensional array of literals. The outer array is one
+     * of disjunctions, the inner ones are of literals.
      *
      * @var Literal[][]
      */
@@ -37,11 +68,13 @@ final class Cnf
     }
 
     /**
-     * Fetch the CNF for a bubble. If the bubble does not exist, return the
-     * empty CNF, which all posts match.
+     * @brief Fetch the CNF that belongs to a certain bubble from the database
+     * using the given database connection.
      *
      * The order of the disjunctions and literals is not guaranteed, and may be
-     * different across calls.
+     * different across calls. Luckily, the order is not important for the
+     * meaning of the CNF: conjunctions and disjunctions are fundamentally
+     * devoid of ordering.
      */
     public static function for_bubble(Postgresql\Connection $db,
                                       string $bubble_id): Cnf
@@ -76,11 +109,17 @@ final class Cnf
     }
 
     /**
-     * Compile the CNF AST into a SQL expression. The SQL expression has the
-     * highest precedence, as it is wrapped in parentheses. Parameters will be
-     * appended onto the given array, and the parameter indices (i.e. the
-     * integers following the dollar signs) will be determined from the array’s
-     * length.
+     * @brief Compile the CNF AST into a SQL expression so that it can be
+     * evaluated against posts.
+     *
+     * The SQL expression is returned as a string. The expression will refer to
+     * parameters using the usual PostgreSQL dollar sign notation. The values
+     * of these parameters will be appended onto the given array, and the
+     * parameter indices will be determined from the array’s length.
+     *
+     * The SQL expression has the highest precedence. Therefore, the caller
+     * does not need to wrap it in parentheses to avoid conflicting fixities
+     * and precedences when embedding the expression into a larger expression.
      *
      * @param string $posts The SQL identifier that names the posts table.
      * @param array<?string> $parameters
@@ -92,8 +131,10 @@ final class Cnf
     }
 
     /**
-     * Like to_sql, but return a generator of tokens instead. You should not
-     * use $parameters until the generator is completely consumed.
+     * @brief Like to_sql, but return a generator of tokens instead.
+     *
+     * You should not use $parameters until the generator is completely
+     * consumed.
      *
      * @param array<?string> $parameters
      * @return Traversable<string>

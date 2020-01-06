@@ -5,8 +5,14 @@ namespace Bubble\Support\Cnf;
 use Traversable;
 
 /**
- * This CNF literal, when evaluated against a post, checks that the post
- * belongs to or does not belong to the specified author.
+ * @ingroup cnf
+ *
+ * @brief The AssertAuthor class is a derived class of the Literal class that
+ * implements literals that check whether applied-to posts belong to a certain
+ * author.
+ *
+ * Please see the Literal class for more information about definition and
+ * usage.
  */
 final class AssertAuthor
     extends Literal

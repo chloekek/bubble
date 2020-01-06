@@ -7,9 +7,17 @@ use Bubble\ViewTimeline\Xact\Bubble;
 use Bubble\ViewTimeline\Xact\Post;
 
 /**
- * Render the HTML page for the “view timeline” use case.
- * See the Mockup.svg file for what this is supposed to resemble.
- * The file Html.scss houses the corresponding style sheet.
+ * @ingroup view_timeline
+ *
+ * @brief Render the HTML page for the “view timeline” use case.
+ *
+ * The rendered HTML page will be presented to the user like figure 1 when
+ * viewed in a web browser. This is a diagrammatic depiction, not a realistic
+ * one, but it gives an overview of all the major features.
+ *
+ * Figure 1:
+ *
+ * @image html Bubble/ViewTimeline/Response/Mockup.svg
  */
 final class Html
 {

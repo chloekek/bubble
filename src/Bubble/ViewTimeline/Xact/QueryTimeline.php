@@ -5,8 +5,10 @@ namespace Bubble\ViewTimeline\Xact;
 use Bubble\Support\Cnf;
 use Bubble\Support\Postgresql;
 
-final
-class QueryTimeline
+/**
+ * @ingroup view_timeline
+ */
+final class QueryTimeline
 {
     private Postgresql\Connection $db;
 
