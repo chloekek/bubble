@@ -1,7 +1,8 @@
 <?php
 declare(strict_types = 1);
-namespace Bubble;
+namespace Bubble\Support;
 
+use Bubble\ViewTimeline;
 use joshtronic\LoremIpsum;
 
 final class Main
@@ -14,7 +15,7 @@ final class Main
     {
         $state   = getcwd() . '/../../state';
         $pg_host = "$state/postgresql/sockets";
-        $db = new Support\Postgresql\Connection("
+        $db = new Postgresql\Connection("
             host=$pg_host
             user=bubble_application
             password=bubble_application
@@ -38,7 +39,7 @@ final class Main
 
                 public function bubble_url(string $id): string
                 {
-                    return '/all/' . Support\Web\Escape::u($id);
+                    return '/all/' . Web\Escape::u($id);
                 }
             },
         );

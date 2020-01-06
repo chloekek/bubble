@@ -13,4 +13,4 @@ set_error_handler(
     },
 );
 
-Bubble\Main::main();
+Bubble\Support\Main::main();
