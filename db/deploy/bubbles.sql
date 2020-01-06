@@ -38,25 +38,9 @@ CREATE INDEX bubbles_owner_id_ix
     ON bubble.bubbles
     (owner_id);
 
-CREATE TABLE bubble.bubble_disjunctions (
-    id uuid,
-    conjunction_id uuid NOT NULL,
-
-    CONSTRAINT bubble_disjunctions_pk
-        PRIMARY KEY (id),
-
-    CONSTRAINT bubble_disjunctions_conjunction_fk
-        FOREIGN KEY (conjunction_id)
-        REFERENCES bubble.bubbles (id)
-        ON DELETE CASCADE
-);
-
-CREATE INDEX bubble_disjunctions_conjunction_id_ix
-    ON bubble.bubble_disjunctions
-    (conjunction_id);
-
 CREATE TABLE bubble.bubble_literals (
     id uuid,
+    conjunction_id uuid NOT NULL,
     disjunction_id uuid NOT NULL,
 
     invert BOOLEAN NOT NULL,
@@ -66,9 +50,9 @@ CREATE TABLE bubble.bubble_literals (
     CONSTRAINT bubble_literals_pk
         PRIMARY KEY (id),
 
-    CONSTRAINT bubble_literals_disjunction_fk
-        FOREIGN KEY (disjunction_id)
-        REFERENCES bubble.bubble_disjunctions (id)
+    CONSTRAINT bubble_literals_conjunction_fk
+        FOREIGN KEY (conjunction_id)
+        REFERENCES bubble.bubbles (id)
         ON DELETE CASCADE,
 
     CONSTRAINT bubble_literals_predicate_ck
@@ -80,9 +64,15 @@ CREATE TABLE bubble.bubble_literals (
         ON DELETE CASCADE
 );
 
-CREATE INDEX bubble_literals_disjunction_id_ix
+COMMENT ON COLUMN bubble.bubble_literals.disjunction_id IS '
+    Disjunctions are not stored in a table, because that would allow for
+    problematic empty disjunctions. Instead, a disjunction exists implicitly
+    when at least one literal belongs to it.
+';
+
+CREATE INDEX bubble_literals_conjunction_id_disjunction_id_ix
     ON bubble.bubble_literals
-    (disjunction_id);
+    (conjunction_id, disjunction_id);
 
 CREATE INDEX bubble_literals_assert_author_id_ix
     ON bubble.bubble_literals
@@ -90,7 +80,6 @@ CREATE INDEX bubble_literals_assert_author_id_ix
 
 GRANT SELECT, INSERT, UPDATE, DELETE
     ON TABLE bubble.bubbles,
-             bubble.bubble_disjunctions,
              bubble.bubble_literals
     TO bubble_application;
 

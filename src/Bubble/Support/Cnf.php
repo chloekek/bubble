@@ -54,12 +54,10 @@ final class Cnf
                 bl.assert_tag
 
             FROM
-                bubble.bubble_disjunctions AS bd
-                INNER JOIN bubble.bubble_literals AS bl
-                    ON bl.disjunction_id = bd.id
+                bubble.bubble_literals AS bl
 
             WHERE
-                bd.conjunction_id = $1
+                bl.conjunction_id = $1
         ', [$bubble_id]);
 
         $cnf = [];
