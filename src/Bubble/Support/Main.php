@@ -23,7 +23,7 @@ final class Main
         ");
 
         $queryTimeline = new ViewTimeline\Xact\QueryTimeline($db);
-        $queryTimeline->query_bubble_timeline('8d96cc11-327e-48de-a7e9-af5654375a8d');
+        $posts = $queryTimeline->query_bubble_timeline('8d96cc11-327e-48de-a7e9-af5654375a8d');
 
         $lipsum = new LoremIpsum;
 
@@ -48,12 +48,7 @@ final class Main
                 new ViewTimeline\Xact\Bubble('1', 'A'),
                 new ViewTimeline\Xact\Bubble('2', 'B'),
             ],
-            [
-                new ViewTimeline\Xact\Post($lipsum->paragraph()),
-                new ViewTimeline\Xact\Post($lipsum->paragraph()),
-                new ViewTimeline\Xact\Post($lipsum->paragraph()),
-                new ViewTimeline\Xact\Post($lipsum->paragraph()),
-            ],
+            $posts,
             '/x',
             '/y',
         );

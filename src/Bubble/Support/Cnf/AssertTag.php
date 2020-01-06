@@ -31,7 +31,12 @@ final class AssertTag
         yield '@>';
         yield 'ARRAY';
         yield '[';
+        yield 'CAST';
+        yield '(';
         yield '$' . (string)\count($parameters);
+        yield 'AS';
+        yield 'VARCHAR';
+        yield ')';
         yield ']';
         yield ')';
     }

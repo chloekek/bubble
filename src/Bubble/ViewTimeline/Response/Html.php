@@ -26,7 +26,7 @@ final class Html
      * Render the entire page.
      *
      * @param Bubble[] $bubbles
-     * @param Post[] $posts
+     * @param iterable<Post> $posts
      */
     public function render($bubbles, $posts, ?string $previous_page_url,
                            ?string $next_page_url): void
@@ -104,7 +104,7 @@ final class Html
      * Render the list of posts in the timelime,
      * along with page navigation buttons if applicable.
      *
-     * @param Post[] $posts
+     * @param iterable<Post> $posts
      */
     public function render_timeline($posts, ?string $previous_page_url,
                                     ?string $next_page_url): void
